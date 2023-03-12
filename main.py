@@ -20,9 +20,11 @@ def reset_timer():
     check_marks.config(text="")
     global REPS
     REPS = 0
+    start_butt.config(state="normal")
 
 
 def start_time():
+    start_butt.config(state="disabled")
     global REPS
     REPS += 1
 
@@ -82,7 +84,7 @@ start_butt.grid(column=0, row=2)
 reset_butt = Button(text='reset', highlightthickness=0, command=reset_timer)
 reset_butt.grid(column=2, row=2)
 
-check_marks = Label(text="✓", fg=GREEN, bg=PINK, font=(FONT_NAME, 20))
+check_marks = Label(text="", fg=GREEN, bg=PINK, font=(FONT_NAME, 20))
 check_marks.grid(column=1, row=3)
 
 window.mainloop()
