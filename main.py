@@ -9,25 +9,35 @@ FONT_NAME = "Courier"
 WORK_MIN = 25
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
-reps = 0
+REPS = 0
+TIMER = None
+
+
+def reset_timer():
+    window.after_cancel(TIMER)
+    canvas.itemconfig(timer, text="00:00")
+    title_label.config(text="Timer")
+    check_marks.config(text="")
+    global REPS
+    REPS = 0
 
 
 def start_time():
-    global reps
-    reps += 1
+    global REPS
+    REPS += 1
 
-    work_sec = WORK_MIN * 60
+    work_min = WORK_MIN * 60
     short_break_min = SHORT_BREAK_MIN * 60
     long_break_min = LONG_BREAK_MIN * 60
 
-    if reps % 8 == 0:
+    if REPS % 8 == 0:
         countdown(long_break_min)
         title_label.config(text="Break", fg=RED)
-    elif reps % 2 == 0:
+    elif REPS % 2 == 0:
         countdown(short_break_min)
         title_label.config(text="Break", fg=YELLOW)
     else:
-        countdown(work_sec)
+        countdown(work_min)
         title_label.config(text="Work", fg=GREEN)
 
 
@@ -40,9 +50,14 @@ def countdown(count):
 
     canvas.itemconfig(timer, text=f"{count_min}:{count_sec}")
     if count > 0:
-        window.after(1000, countdown, count - 1)
+        global TIMER
+        TIMER = window.after(1000, countdown, count - 1)
     else:
         start_time()
+        marks = ""
+        for _ in range(math.floor(REPS/2)):
+            marks += "✓"
+        check_marks.config(text=marks)
 
 
 window = Tk()
@@ -64,10 +79,10 @@ canvas.grid(column=1, row=1)
 start_butt = Button(text='start', highlightthickness=0, command=start_time)
 start_butt.grid(column=0, row=2)
 
-reset_butt = Button(text='reset', highlightthickness=0)
+reset_butt = Button(text='reset', highlightthickness=0, command=reset_timer)
 reset_butt.grid(column=2, row=2)
 
-check_marks = Label(text="✓", fg=GREEN, bg=PINK)
+check_marks = Label(text="✓", fg=GREEN, bg=PINK, font=(FONT_NAME, 20))
 check_marks.grid(column=1, row=3)
 
 window.mainloop()
