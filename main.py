@@ -9,20 +9,40 @@ FONT_NAME = "Courier"
 WORK_MIN = 25
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
+reps = 0
 
 
 def start_time():
-    countdown(5 * 60)
+    global reps
+    reps += 1
+
+    work_sec = WORK_MIN * 60
+    short_break_min = SHORT_BREAK_MIN * 60
+    long_break_min = LONG_BREAK_MIN * 60
+
+    if reps % 8 == 0:
+        countdown(long_break_min)
+        title_label.config(text="Break", fg=RED)
+    elif reps % 2 == 0:
+        countdown(short_break_min)
+        title_label.config(text="Break", fg=YELLOW)
+    else:
+        countdown(work_sec)
+        title_label.config(text="Work", fg=GREEN)
 
 
 def countdown(count):
 
     count_min = math.floor(count / 60)
     count_sec = count % 60
+    if count_sec < 10:
+        count_sec = f'0{count_sec}'
 
     canvas.itemconfig(timer, text=f"{count_min}:{count_sec}")
     if count > 0:
         window.after(1000, countdown, count - 1)
+    else:
+        start_time()
 
 
 window = Tk()
